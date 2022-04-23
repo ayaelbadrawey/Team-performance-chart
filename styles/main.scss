@@ -2,22 +2,17 @@
 // @import 'components.dashboard';
 // @import 'components.users-list';
 
-.search-input {
-    border-radius: 7px;
-    border: unset;
-    padding: 5px;
 
-    &:focus-visible {
-        outline: 0;
-    }
-}
-
-.navigation {
-    padding: 15px 0 15px 0;
-    font-size: 1rem;
-    margin-left: 42%
-}
+// .navigation {
+//     padding: 15px 0 15px 0;
+//     font-size: 1rem;
+//     margin-left: 42%;
+// }
 
 .nuxt-link-exact-active {
     color: #000;
+}
+
+mark {
+    background: #f6e0ad !important;
 }
