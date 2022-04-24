@@ -1,6 +1,6 @@
 <template>
   <div class="c-chart__container">
-    <v-chart ref="chart" :option.sync="chartOptions" />
+    <v-chart ref="chart" :option="chartOptions" />
   </div>
 </template>
 
@@ -67,6 +67,26 @@ export default {
         tooltip: {
           trigger: "axis",
           transitionDuration: 0,
+          formatter: (params) => {
+            console.log(params);
+            return (
+              '<div style="background-color: #0c033a; border-radius: 5px">' +
+              '<div class="d-flex flex-column p-2 text-white">' +
+              '<span class="mx-auto">' +
+              params[0].name +
+              "</span>" +
+              '<div class="d-flex flex-row align-items-center">' +
+              '<div class="mx-1" style="height: 7px; width: 7px; border-radius: 100%; background-color:' +
+              params[0].color +
+              '"></div>' +
+              "<span>Team Performance Index:" +
+              params[0].data +
+              "</span>" +
+              " </div>" +
+              "</div>" +
+              "</div>"
+            );
+          },
           confine: false,
           hideDelay: 0,
           padding: 0,
@@ -86,7 +106,7 @@ export default {
             show: true,
           },
           axisTick: {
-            show: false,
+            show: true,
           },
           axisLabel: {
             fontSize: 11,
@@ -100,6 +120,7 @@ export default {
         series: [
           {
             data: this.yAxisData,
+            colorBy: "data",
             type: "line",
             symbol: "circle",
             symbolSize: 2,
@@ -109,6 +130,27 @@ export default {
             },
           },
         ],
+        visualMap: {
+          top: 50,
+          right: 10,
+          pieces: [
+            {
+              gt: 0,
+              lte: 50,
+              color: "#FD0100",
+            },
+            {
+              gt: 50,
+              lte: 80,
+              color: "#FBDB0F",
+            },
+            {
+              gt: 80,
+              lte: 100,
+              color: "green",
+            },
+          ],
+        },
       };
     },
 
