@@ -1,6 +1,6 @@
 <template>
   <div class="c-chart__container">
-    <v-chart ref="chart" :option="chartOptions" />
+    <v-chart ref="chart" :option.sync="chartOptions" />
   </div>
 </template>
 
@@ -27,44 +27,24 @@ use([
 ]);
 export default {
   name: "PerformanceChartComponent",
-
+  props: ["date"],
   components: {
     VChart,
   },
-
+  created() {
+    this.$store.dispatch("getData");
+  },
   data() {
     return {
-      chartData: [
-        {
-          date_ms: 1641772800000,
-          performance: 0.2,
-        },
-        {
-          date_ms: 1641859200000,
-          performance: 0.33,
-        },
-        {
-          date_ms: 1641945600000,
-          performance: 0.53,
-        },
-        {
-          date_ms: 1642032000000,
-          performance: 0.31,
-        },
-        {
-          date_ms: 1642118400000,
-          performance: 0.65,
-        },
-        {
-          date_ms: 1642204800000,
-          performance: 0.88,
-        },
-        {
-          date_ms: 1642291200000,
-          performance: 0.07,
-        },
-      ],
+      filtered: null,
     };
+  },
+  updated() {
+    this.$emit(
+      "dateLimits",
+      this.chartData[0],
+      this.chartData[this.chartData.length - 1]
+    );
   },
 
   computed: {
@@ -73,6 +53,9 @@ export default {
         width: "auto",
         height: "300px",
       };
+    },
+    chartData() {
+      return this.$store.state.chartData;
     },
 
     chartOptions() {
@@ -141,6 +124,40 @@ export default {
   methods: {
     formatDate(dateInMs) {
       return moment(dateInMs).format("DD MMM YYYY");
+    },
+    filterData(date) {
+      this.filtered = this.chartData.map((obj) => ({ ...obj }));
+      if (date.start || date.end) {
+        let filterStartDate = this.formatDate(date.start);
+        let filterEndDate = this.formatDate(date.end);
+        for (let i = 0; i < this.filtered.length; i++) {
+          let date = this.formatDate(this.filtered[i].date_ms);
+          if (filterStartDate === date) {
+            let index = this.filtered.indexOf(this.filtered[i]);
+            this.filtered[0].date_ms = filterStartDate;
+            this.filtered[0].performance = this.filtered[i].performance;
+            this.filtered.splice(0, index);
+          }
+          if (filterEndDate === date) {
+            let index = this.filtered.indexOf(this.filtered[i]);
+            this.filtered[this.filtered.length - 1].date_ms = filterEndDate;
+            this.filtered[this.filtered.length - 1].performance =
+              this.filtered[i].performance;
+            this.filtered.splice(index + 1, this.filtered.length);
+          }
+        }
+        this.$store.commit("setChartData", this.filtered);
+      } else {
+        this.$store.dispatch("getData");
+      }
+    },
+  },
+  watch: {
+    date: {
+      deep: true,
+      handler(date) {
+        this.filterData(date);
+      },
     },
   },
 };

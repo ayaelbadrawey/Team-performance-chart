@@ -18,12 +18,17 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    'ant-design-vue/dist/antd.css'
+    'ant-design-vue/dist/antd.css',
+    '@/static/scss/components-dashboard.scss',
+    '@/static/scss/components-users-list.scss',
+    '@/static/scss/main.scss',
+    '@/static/scss/reset.scss',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '@/plugins/antd-ui'
+    '@/plugins/antd-ui',
+    '@/plugins/vue-date-range-picker'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

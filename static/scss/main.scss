@@ -2,17 +2,15 @@
 // @import 'components.dashboard';
 // @import 'components.users-list';
 
-
-// .navigation {
-//     padding: 15px 0 15px 0;
-//     font-size: 1rem;
-//     margin-left: 42%;
-// }
-
 .nuxt-link-exact-active {
     color: #000;
 }
 
 mark {
     background: #f6e0ad !important;
+}
+
+.v-calendar .input-field input {
+    height: 30px !important;
+    padding-right: 0 !important;
 }
