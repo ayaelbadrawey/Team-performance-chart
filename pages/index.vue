@@ -18,10 +18,26 @@
       </div>
     </div>
 
-    <Employees :employees="employeesList" :filter="filter"></Employees>
+    <Employees
+      :employees="employeesList.employees"
+      :filter="filter"
+    ></Employees>
 
     <div class="c-dashboard__footer">
-      <button class="c-button">Load More</button>
+      <button v-if="!load && !noMore" class="c-button" @click="load = true">
+        Load More
+      </button>
+      <button class="btn btn-text m-0" v-else-if="load && !noMore">
+        <span
+          class="
+            spinner-border spinner-border-sm
+            align-middle
+            ms-2
+            text-primary
+          "
+        ></span>
+      </button>
+      <span class="text-primary" v-else-if="noMore">No more data</span>
     </div>
   </div>
 </template>
@@ -34,20 +50,54 @@ export default {
   data() {
     return {
       filter: "",
+      load: false,
+      noMore: false,
     };
   },
   mounted() {
     const params = new URLSearchParams(window.location.search);
     for (const param of params) {
       this.filter = param[1];
-    } // this.filter = this.$route.params.filter;
+    }
   },
   async asyncData({ $axios }) {
     const employeesList = await $axios.$get(
       "https://fe-task.getsandbox.com/employees"
     );
-    return { employeesList: employeesList.employees };
+    return { employeesList: employeesList };
   },
-  methods: {},
+  methods: {
+    loadMoreEmployees() {
+      if (this.load) {
+        if (this.employeesList.current_page < this.employeesList.pages) {
+          console.log(this.employeesList.pages);
+          this.$axios
+            .$get("https://fe-task.getsandbox.com/employees", {
+              params: { page: this.employeesList.current_page + 1 },
+            })
+            .then((response) => {
+              this.load = false;
+              this.employeesList.current_page = response.current_page;
+              response.employees.forEach((element) => {
+                this.employeesList.employees.push(element);
+              });
+            })
+            .catch((error) => {
+              this.load = false;
+            });
+        } else {
+          console.log("hena");
+          this.noMore = true;
+          this.employeesList.current_page = 1;
+          console.log(this.employeesList.current_page);
+        }
+      }
+    },
+  },
+  watch: {
+    load() {
+      this.loadMoreEmployees();
+    },
+  },
 };
 </script>
