@@ -1,6 +1,5 @@
-
-module.exports = {
-  preset: '@nuxt/test-utils',
+const config = {
+  // preset: '@nuxt/test-utils',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
@@ -22,3 +21,4 @@ module.exports = {
   ],
   testEnvironment: 'jsdom'
 }
+module.exports = config;
